@@ -1,19 +1,17 @@
-const {fetchMyIP, fetchCoordsByIP} = require('./iss');
+const {nextISSTimesForMyLocation} = require('./iss');
 
-fetchMyIP((error, ip) => {
-  if (error) {
-    console.log("It didn't work!", error);
-    return;
+const nextTime = function(array) {
+  for (const time of array) {
+    const datetime = new Date(0);
+    datetime.setUTCSeconds(time.risetime);
+    const duration = time.duration;
+
+    console.log(`Next pass at ${datetime} for ${duration} seconds!`);
   }
+}
 
-  // console.log("It worked! Returned IP:", ip);
+nextISSTimesForMyLocation((error, array) => {
+  if (error) return console.log("ERROR >> ", error);
 
-  fetchCoordsByIP(ip, (error, data) => {
-    if (error) {
-      console.log("ERROR >> ", error);
-      return;
-    }
-
-    console.log(data);
-  })
-});
+  nextTime(array);
+})
